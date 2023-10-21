@@ -1,5 +1,3 @@
-// SpaceXDataContext.tsx
-
 import React, {
   createContext,
   useContext,
@@ -8,7 +6,7 @@ import React, {
   useEffect,
 } from "react";
 
-// Define the data type
+// data type
 interface LaunchData {
   links: {
     mission_patch_small: string;
@@ -21,11 +19,13 @@ interface LaunchData {
   launch_success: boolean;
 }
 
-// Define the context type
+// context type
 interface SpaceXDataContextType {
   data: LaunchData[];
   loading: boolean;
   error: Error | null;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
 }
 
 const SpaceXDataContext = createContext<SpaceXDataContextType | undefined>(
@@ -50,6 +50,7 @@ export const SpaceXDataProvider: React.FC<SpaceXDataProviderProps> = ({
   const [data, setData] = useState<LaunchData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetch(`https://api.spacexdata.com/v3/launches`)
@@ -69,8 +70,23 @@ export const SpaceXDataProvider: React.FC<SpaceXDataProviderProps> = ({
       });
   }, []);
 
+  //current page from localStorage on initial load
+  useEffect(() => {
+    const savedPage = localStorage.getItem("currentPage");
+    if (savedPage) {
+      setCurrentPage(parseInt(savedPage, 10));
+    }
+  }, []);
+
+  // current page to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("currentPage", String(currentPage));
+  }, [currentPage]);
+
   return (
-    <SpaceXDataContext.Provider value={{ data, loading, error }}>
+    <SpaceXDataContext.Provider
+      value={{ data, loading, error, currentPage, setCurrentPage }}
+    >
       {children}
     </SpaceXDataContext.Provider>
   );
