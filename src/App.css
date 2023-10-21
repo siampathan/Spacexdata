@@ -4,6 +4,19 @@
   box-sizing: border-box;
 }
 
+.search-section {
+  max-width: 20rem;
+  margin: 0 auto;
+  border: 1px solid black;
+}
+
+.search-section input {
+  width: 100%;
+  border: hidden;
+  outline: none;
+  padding-left: 10px;
+}
+
 .my-div {
   margin: 30px auto;
   padding: 10px 60px;
