@@ -4,17 +4,18 @@
   box-sizing: border-box;
 }
 
-.search-section {
+/* .search-section {
   max-width: 20rem;
   margin: 0 auto;
   border: 1px solid black;
-}
+} */
 
 .search-section input {
-  width: 100%;
+  max-width: 20rem;
   border: hidden;
   outline: none;
   padding-left: 10px;
+  border: 1px solid black;
 }
 
 .my-div {

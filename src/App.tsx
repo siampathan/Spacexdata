@@ -10,7 +10,15 @@ const ITEMS_PER_PAGE = 9;
 
 const App: React.FC = () => {
   //fetching data
-  const { data, loading, error, currentPage, setCurrentPage } = useSpaceXData();
+  const {
+    data,
+    loading,
+    error,
+    currentPage,
+    setCurrentPage,
+    upcomingOnly,
+    setFilterUpcoming,
+  } = useSpaceXData();
   //search filter
   const [searchInput, setSearchInput] = useState("");
   console.log(searchInput);
@@ -20,6 +28,10 @@ const App: React.FC = () => {
     item.rocket.rocket_name.toLowerCase().includes(searchInput.toLowerCase())
   );
 
+  const filteredDataWithCheckbox = upcomingOnly
+    ? filteredData.filter((item) => item.upcoming)
+    : filteredData;
+
   //pagination
   const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
 
@@ -28,7 +40,7 @@ const App: React.FC = () => {
     (_, index) => index + 1
   );
 
-  const itemsToDisplay = filteredData.slice(
+  const itemsToDisplay = filteredDataWithCheckbox.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
@@ -50,13 +62,28 @@ const App: React.FC = () => {
   return (
     <>
       <h1>Fetched Data:</h1>
-      <div className="search-section">
-        <input
-          type="text"
-          placeholder="Search..."
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-        />
+      <div className="search-section d-flex justify-content-between">
+        <div className="search-filter">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+        </div>
+
+        <div className="check-filter">
+          <input
+            type="checkbox"
+            className="form-check-input"
+            id="upcomingCheckbox"
+            checked={upcomingOnly}
+            onChange={() => setFilterUpcoming(!upcomingOnly)}
+          />
+          <label className="form-check-label" htmlFor="upcomingCheckbox">
+            Show upcoming only
+          </label>
+        </div>
       </div>
 
       <div className="my-div">
