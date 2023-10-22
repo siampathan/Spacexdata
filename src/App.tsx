@@ -5,6 +5,8 @@ import {
   useSpaceXData,
 } from "./components/SpaceXDataContext";
 import dayjs from "dayjs";
+import SearchFilter from "./components/search/search";
+import CheckFilter from "./components/checkfilter/checkfilter";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -81,11 +83,11 @@ const App: React.FC = () => {
   };
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <h2 className="text-center">Loading...</h2>;
   }
 
   if (error) {
-    return <p>Error: {error.message}</p>;
+    return <h2 className="text-center ">Error: {error.message}</h2>;
   }
 
   return (
@@ -99,29 +101,17 @@ const App: React.FC = () => {
 
       {/* search filter */}
       <div className="search-section">
-        <div className="search-filter">
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-          />
-        </div>
+        <SearchFilter
+          search={searchInput}
+          handleChange={(e: any) => setSearchInput(e.target.value)}
+        />
 
         <div className="filter-sec">
           {/* checkbox filter */}
-          <div className="check-filter">
-            <input
-              type="checkbox"
-              className="form-check-input"
-              id="upcomingCheckbox"
-              checked={upcomingOnly}
-              onChange={() => setFilterUpcoming(!upcomingOnly)}
-            />
-            <label className="form-check-label" htmlFor="upcomingCheckbox">
-              Show upcoming only
-            </label>
-          </div>
+          <CheckFilter
+            handleCheck={upcomingOnly}
+            handleChange={() => setFilterUpcoming(!upcomingOnly)}
+          />
 
           <div className="select-filter">
             {/* Status */}
@@ -157,7 +147,7 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* rendering from API */}
+      {/* rendering from API section */}
       <div className="my-div">
         {itemsToDisplay.map((item, index) => (
           <div className="cover-sec" key={index}>
@@ -185,7 +175,7 @@ const App: React.FC = () => {
       </div>
 
       {/* pagination */}
-      <div className="d-flex justify-content-center">
+      <div className="d-flex mt-4 justify-content-center">
         <nav aria-label="Page navigation">
           <ul className="pagination">
             <li
@@ -219,6 +209,10 @@ const App: React.FC = () => {
             </li>
           </ul>
         </nav>
+      </div>
+
+      <div className="footer text-center pt-5 pb-3">
+        <h6>Created by the brilliant minds behind SpaceX</h6>
       </div>
     </>
   );
