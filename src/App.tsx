@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./App.css";
+import "./App.scss";
 import {
   SpaceXDataProvider,
   useSpaceXData,
@@ -49,6 +49,8 @@ const App: React.FC = () => {
       return dayjs().diff(dayjs(item.launch_date_local), "month") <= 1;
     } else if (dateFilter === "lastYear") {
       return dayjs().diff(dayjs(item.launch_date_local), "year") <= 1;
+    } else if (dateFilter === "last3Year") {
+      return dayjs().diff(dayjs(item.launch_date_local), "year") <= 3;
     }
     return true;
   });
@@ -88,8 +90,15 @@ const App: React.FC = () => {
 
   return (
     <>
-      <h1>Fetched Data:</h1>
-      <div className="search-section d-flex justify-content-between">
+      <div className="header-sec">
+        <h3>Spaceflight details</h3>
+        <p>
+          Find out the elaborate features of all the past big spaceflights.{" "}
+        </p>
+      </div>
+
+      {/* search filter */}
+      <div className="search-section">
         <div className="search-filter">
           <input
             type="text"
@@ -99,62 +108,76 @@ const App: React.FC = () => {
           />
         </div>
 
-        {/* button */}
-        <div className="form-group">
-          <select
-            id="statusFilter"
-            className="form-control form-select"
-            value={selectedStatus}
-            onChange={(e) => setSelectedStatus(e.target.value)}
-          >
-            <option value="">Status</option>
-            <option value="success">Success</option>
-            <option value="failed">Failed</option>
-          </select>
-        </div>
+        <div className="filter-sec">
+          {/* checkbox filter */}
+          <div className="check-filter">
+            <input
+              type="checkbox"
+              className="form-check-input"
+              id="upcomingCheckbox"
+              checked={upcomingOnly}
+              onChange={() => setFilterUpcoming(!upcomingOnly)}
+            />
+            <label className="form-check-label" htmlFor="upcomingCheckbox">
+              Show upcoming only
+            </label>
+          </div>
 
-        <div className="form-group">
-          <select
-            id="dateFilter"
-            className="form-control form-select"
-            value={dateFilter}
-            onChange={(e) => setDateFilter(e.target.value)}
-          >
-            <option value="">By Launch Date</option>
-            <option value="lastWeek">Last Week</option>
-            <option value="lastMonth">Last Month</option>
-            <option value="lastYear">Last Year</option>
-          </select>
-        </div>
+          <div className="select-filter">
+            {/* Status */}
+            <div className="form-group">
+              <select
+                id="statusFilter"
+                className="form-control form-select"
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+              >
+                <option value="">By Launch Status</option>
+                <option value="success">Success</option>
+                <option value="failed">Failed</option>
+              </select>
+            </div>
 
-        <div className="check-filter">
-          <input
-            type="checkbox"
-            className="form-check-input"
-            id="upcomingCheckbox"
-            checked={upcomingOnly}
-            onChange={() => setFilterUpcoming(!upcomingOnly)}
-          />
-          <label className="form-check-label" htmlFor="upcomingCheckbox">
-            Show upcoming only
-          </label>
+            {/* filterd by week, month and year */}
+            <div className="form-group">
+              <select
+                id="dateFilter"
+                className="form-control form-select"
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+              >
+                <option value="">By Launch Date</option>
+                <option value="lastWeek">Last Week</option>
+                <option value="lastMonth">Last Month</option>
+                <option value="lastYear">Last Year</option>
+                <option value="last3Year">Last 3 Year</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
 
+      {/* rendering from API */}
       <div className="my-div">
         {itemsToDisplay.map((item, index) => (
           <div className="cover-sec" key={index}>
             <div className="image_container">
               <img src={item.links.mission_patch_small} alt="image" />
             </div>
-            <p>
-              Launch Date:
-              {dayjs(item.launch_date_local).format("D MMMM, YYYY")}
+            <p className="text-secondary">
+              Launch Date :
+              <span className="text-muted">
+                {dayjs(item.launch_date_local).format(" D MMMM, YYYY")}
+              </span>
             </p>
-            <h3>{item.mission_name}</h3>
-            <p> {item.rocket.rocket_name} </p>
-            <p>Launch Status:</p>
-            <p className={`${item.launch_success ? "green" : "red"}`}>
+            <h3 className="ps-2 pe-2">{item.mission_name}</h3>
+            <p className="text-muted"> {item.rocket.rocket_name} </p>
+            <p className="text-black-50">Launch Status :</p>
+            <p
+              className={`badge ${
+                item.launch_success ? "text-bg-success" : "text-bg-danger"
+              }`}
+            >
               {item.launch_success ? "Success" : "Failed"}
             </p>
           </div>
