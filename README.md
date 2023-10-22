@@ -1,3 +1,8 @@
+# Node version must be 19.8.1
+
+then clone this repo `git clone https://github.com/siampathan/Spacexdata.git`
+and then install npm packeges `npm install`
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
