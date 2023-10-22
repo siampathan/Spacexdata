@@ -29,6 +29,10 @@ interface SpaceXDataContextType {
   setCurrentPage: (page: number) => void;
   upcomingOnly: boolean;
   setFilterUpcoming: (upcoming: boolean) => void;
+  filterSuccess: boolean;
+  setFilterSuccess: (success: boolean) => void;
+  filterFailed: boolean;
+  setFilterFailed: (failed: boolean) => void;
 }
 
 const SpaceXDataContext = createContext<SpaceXDataContextType | undefined>(
@@ -55,6 +59,8 @@ export const SpaceXDataProvider: React.FC<SpaceXDataProviderProps> = ({
   const [error, setError] = useState<Error | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [upcomingOnly, setUpcomingOnly] = useState(false);
+  const [filterSuccess, setFilterSuccess] = useState(false);
+  const [filterFailed, setFilterFailed] = useState(false);
 
   useEffect(() => {
     fetch(`https://api.spacexdata.com/v3/launches`)
@@ -97,6 +103,10 @@ export const SpaceXDataProvider: React.FC<SpaceXDataProviderProps> = ({
         setCurrentPage,
         upcomingOnly,
         setFilterUpcoming: setUpcomingOnly,
+        filterSuccess,
+        setFilterSuccess,
+        filterFailed,
+        setFilterFailed,
       }}
     >
       {children}

@@ -18,22 +18,39 @@ const App: React.FC = () => {
     setCurrentPage,
     upcomingOnly,
     setFilterUpcoming,
+    filterSuccess,
+    setFilterSuccess,
+    filterFailed,
+    setFilterFailed,
   } = useSpaceXData();
   //search filter
   const [searchInput, setSearchInput] = useState("");
-  console.log(searchInput);
+  //select filter
+  const [selectedStatus, setSelectedStatus] = useState("");
 
   //search filterd
   const filteredData = data.filter((item) =>
     item.rocket.rocket_name.toLowerCase().includes(searchInput.toLowerCase())
   );
 
+  //filter with status
+  const filteredDataWithFilters = filteredData.filter((item) => {
+    if (selectedStatus === "success") {
+      return item.launch_success;
+    } else if (selectedStatus === "failed") {
+      return !item.launch_success;
+    }
+    return true;
+  });
+
   const filteredDataWithCheckbox = upcomingOnly
-    ? filteredData.filter((item) => item.upcoming)
-    : filteredData;
+    ? filteredDataWithFilters.filter((item) => item.upcoming)
+    : filteredDataWithFilters;
 
   //pagination
-  const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(
+    filteredDataWithCheckbox.length / ITEMS_PER_PAGE
+  );
 
   const pageNumbers = Array.from(
     { length: totalPages },
@@ -61,7 +78,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      <h1>Fetched Data:</h1>
+      <h1 className="text-center">Spaceflight details</h1>
       <div className="search-section d-flex justify-content-between">
         <div className="search-filter">
           <input
@@ -70,6 +87,20 @@ const App: React.FC = () => {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
           />
+        </div>
+
+        {/* button */}
+        <div className="form-group">
+          <select
+            id="statusFilter"
+            className="form-control form-select"
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+          >
+            <option value="">By Launch Status</option>
+            <option value="success">Success</option>
+            <option value="failed">Failed</option>
+          </select>
         </div>
 
         <div className="check-filter">
