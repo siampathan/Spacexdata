@@ -33,6 +33,10 @@ interface SpaceXDataContextType {
   setFilterSuccess: (success: boolean) => void;
   filterFailed: boolean;
   setFilterFailed: (failed: boolean) => void;
+  selectedDay: string;
+  setSelectedDay: (status: string) => void;
+  dateFilter: string;
+  setDateFilter: (filter: string) => void;
 }
 
 const SpaceXDataContext = createContext<SpaceXDataContextType | undefined>(
@@ -61,6 +65,8 @@ export const SpaceXDataProvider: React.FC<SpaceXDataProviderProps> = ({
   const [upcomingOnly, setUpcomingOnly] = useState(false);
   const [filterSuccess, setFilterSuccess] = useState(false);
   const [filterFailed, setFilterFailed] = useState(false);
+  const [selectedDay, setSelectedDay] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
 
   useEffect(() => {
     fetch(`https://api.spacexdata.com/v3/launches`)
@@ -107,6 +113,10 @@ export const SpaceXDataProvider: React.FC<SpaceXDataProviderProps> = ({
         setFilterSuccess,
         filterFailed,
         setFilterFailed,
+        selectedDay,
+        setSelectedDay,
+        dateFilter,
+        setDateFilter,
       }}
     >
       {children}

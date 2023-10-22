@@ -18,10 +18,8 @@ const App: React.FC = () => {
     setCurrentPage,
     upcomingOnly,
     setFilterUpcoming,
-    filterSuccess,
-    setFilterSuccess,
-    filterFailed,
-    setFilterFailed,
+    dateFilter,
+    setDateFilter,
   } = useSpaceXData();
   //search filter
   const [searchInput, setSearchInput] = useState("");
@@ -43,9 +41,21 @@ const App: React.FC = () => {
     return true;
   });
 
+  //filter data based on the selected date filter
+  const filteredDataWithDateFilter = filteredDataWithFilters.filter((item) => {
+    if (dateFilter === "lastWeek") {
+      return dayjs().diff(dayjs(item.launch_date_local), "week") <= 1;
+    } else if (dateFilter === "lastMonth") {
+      return dayjs().diff(dayjs(item.launch_date_local), "month") <= 1;
+    } else if (dateFilter === "lastYear") {
+      return dayjs().diff(dayjs(item.launch_date_local), "year") <= 1;
+    }
+    return true;
+  });
+
   const filteredDataWithCheckbox = upcomingOnly
-    ? filteredDataWithFilters.filter((item) => item.upcoming)
-    : filteredDataWithFilters;
+    ? filteredDataWithDateFilter.filter((item) => item.upcoming)
+    : filteredDataWithDateFilter;
 
   //pagination
   const totalPages = Math.ceil(
@@ -78,7 +88,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      <h1 className="text-center">Spaceflight details</h1>
+      <h1>Fetched Data:</h1>
       <div className="search-section d-flex justify-content-between">
         <div className="search-filter">
           <input
@@ -97,9 +107,23 @@ const App: React.FC = () => {
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
           >
-            <option value="">By Launch Status</option>
+            <option value="">Status</option>
             <option value="success">Success</option>
             <option value="failed">Failed</option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <select
+            id="dateFilter"
+            className="form-control form-select"
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value)}
+          >
+            <option value="">By Launch Date</option>
+            <option value="lastWeek">Last Week</option>
+            <option value="lastMonth">Last Month</option>
+            <option value="lastYear">Last Year</option>
           </select>
         </div>
 
